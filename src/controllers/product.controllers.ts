@@ -12,7 +12,7 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
         res.json({
             status: "success",
             data: { ...newProduct },
-            message: 'Order created Succesfully',
+            message: 'Product created Succesfully',
         });
     } catch(error) {
         next(error);
@@ -31,7 +31,7 @@ export const createMerchant = async (req: Request, res: Response, next: NextFunc
             res.json({
                 status: "success",
                 data: { ...newProduct },
-                message: 'Order created Succesfully',
+                message: 'Product created Succesfully',
             });
         } else {
             res.json({
