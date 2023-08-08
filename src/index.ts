@@ -3,24 +3,32 @@ import cors from 'cors';
 import mongoose from "mongoose";
 import bodyParser from 'body-parser'
 import routes from './routes';
+import db from './database/db';
 
 const PORT = 3001;
 
-const uri0 = "mongodb+srv://abdou:UeawXp23HKfOfZsp@cluster0.yy249vl.mongodb.net/"
+// const uri = "mongodb+srv://abdou:UeawXp23HKfOfZsp@cluster0.yy249vl.mongodb.net/"
 // const uri = "mongodb+srv://root:root@cluster0.ssyvssc.mongodb.net/?retryWrites=true&w=majority";
-mongoose.connect(uri0,
-    { 
-    dbName: 'CESIEATS'
-    })
-  .then(() => console.log('Connexion à MongoDB  Product réussie !'))
-  .catch(() => console.log('Connexion à MongoDB Product échouée !'));
+// mongoose.connect(uri,
+//     { 
+//     dbName: 'CESIEATS'
+//     })
+//   .then(() => console.log('Connexion à MongoDB  Product réussie !'))
+//   .catch(() => console.log('Connexion à MongoDB Product échouée !'));
   
-  mongoose.connection.on('connected', function() {
-    console.log("database is ready now");
-  });
-  mongoose.connection.on('disconnected', function() {
-  console.log("database is disconnected");
-  });
+//   mongoose.connection.on('connected', function() {
+//     console.log("database is ready now");
+//   });
+//   mongoose.connection.on('disconnected', function() {
+//   console.log("database is disconnected");
+//   });
+
+db.on('connected', function() {
+       console.log("database is ready now with db");
+   });
+db.on('disconnected', function() {
+   console.log("database is disconnected with db");
+   });
 
 // create instance server
 const app: Application = express();

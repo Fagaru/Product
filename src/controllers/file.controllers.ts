@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import request from "request";
 import fs from "fs";
 import axios from "axios";
 import path from "path";
+import db from "../database/db";
+import CIS_CIP_bdpm from "../models/CIS_CIP_bdpm.model";
 
 export const downloadFiles = async (req: Request, res: Response, next: NextFunction) => {
     const fileUrl = 'https://base-donnees-publique.medicaments.gouv.fr/telechargement.php?fichier=CIS_bdpm.txt';
@@ -57,6 +58,47 @@ export const downloadFiles = async (req: Request, res: Response, next: NextFunct
         next(error);
     }
 };
+
+
+// Import data from file.txt
+
+const dataFilePath = '../data_gouv/file_txt/CIS_CIP_bdpm.txt'; // Adjust the path to your data file
+
+export const importData = async (req: Request, res: Response, next: NextFunction) =>{
+  db.once('open', async () => {
+    console.log('Connected to MongoDB');
+
+    try {
+      const data = await fs.promises.readFile(dataFilePath, 'utf8');
+      const lines = data.trim().split('\n');
+
+      for (const line of lines) {
+        const [codeCIS, codeCIP7, presentationLabel, administrativeStatusOfPresentation, marketingStatus, marketingDeclarationDate, codeCIP13, approvalForCommunities, reimbursementRate, priceInEuros, indicGivingEntitlementToRefund] = line.split('\t');
+        const cis_cip_bdpm = new CIS_CIP_bdpm({ codeCIS, codeCIP7, presentationLabel, administrativeStatusOfPresentation, marketingStatus, marketingDeclarationDate, codeCIP13, approvalForCommunities, reimbursementRate, priceInEuros, indicGivingEntitlementToRefund });
+        await cis_cip_bdpm.save();
+        console.log(`Inserted: ${codeCIS}, ${marketingDeclarationDate}`);
+      }
+
+      console.log('Data insertion complete');
+      res.json({
+        status: "success",
+        data: { },
+        message: 'File downloaded successfully.',
+      })
+    } catch (error) {
+      console.error('Error:', error);
+      next(error);
+    } finally {
+      db.close();
+    }
+  });
+}
+
+
+
+
+
+
 
 const downloadFile = async (url: string, destinationPath: fs.PathLike) => {
     try {
