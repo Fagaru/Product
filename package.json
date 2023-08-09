@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "nodemon src/index.ts",
-    "build": "tsc",
+    "build": "bash node_modules/.bin/tsc -v",
     "start": "npm run build && node dist/index.js",
     "test": "jest"
   },
