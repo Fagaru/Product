@@ -1,10 +1,9 @@
 module.exports = {
   "compilerOptions": {
     "rootDir": "./src",
+    "outDir": "./dist",
     // Other compiler options...
   },
-  "include": ["src/**/*"],
   "preset": 'ts-jest',
   "testEnvironment": 'node',
 };
-

@@ -60,6 +60,21 @@ export const findOne = async (req: Request, res: Response, next: NextFunction) =
     }
 };
 
+export const getTypeProduct = async (req: Request, res: Response, next: NextFunction) =>{
+    try{
+        const filter = {typeProduct: req.params.typeProduct};
+        const product = await Product.find(filter);
+        res.json({
+            status: "success",
+            data: { ...product },
+            message: 'Product found Succesfully',
+        });
+    } catch(error) {
+        next(error);
+    }
+};
+
+
 export const updateOne = async (req: Request, res: Response, next: NextFunction) =>{
     try{
         const filter = {_id: req.params.id};

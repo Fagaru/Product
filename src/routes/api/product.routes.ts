@@ -7,6 +7,7 @@ routes.route('/all').get(controllers.all);
 routes.route('/sudoCreateProduct').post(controllers.create);
 routes.route('/createProduct').post(controllers.createMerchant);
 routes.route('/findOne/:id').get(controllers.findOne);
+routes.route('/typeProduct/:typeProduct').get(controllers.getTypeProduct);
 routes.route('/updateOne/:id').patch(controllers.updateOne);
 routes.route('/deleteAsk/:id').patch(controllers.deleteAsk);
 routes.route('/deleteOne/:id').patch(controllers.deleteOne);
