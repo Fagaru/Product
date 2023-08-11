@@ -16,16 +16,26 @@ exports.deleteOneSudo = exports.deleteOne = exports.deleteAsk = exports.all = ex
 const product_model_1 = __importDefault(require("../models/product.model"));
 const create = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const newProduct = new product_model_1.default(req.body);
-        console.log(req.body);
-        console.log("Product");
-        console.log(newProduct);
-        const savedOrder = yield newProduct.save();
-        res.json({
-            status: "success",
-            data: Object.assign({}, newProduct),
-            message: 'Product created Succesfully',
-        });
+        const filter = { id: req.body.id };
+        const product = yield product_model_1.default.findOne(filter).select("name").lean();
+        if (product) {
+            res.json({
+                status: "success",
+                data: Object.assign({}, product),
+                message: 'Product already exist',
+            });
+        }
+        else {
+            const newProduct = new product_model_1.default(req.body);
+            console.log("new Product", newProduct.id);
+            console.log(newProduct);
+            const savedOrder = yield newProduct.save();
+            res.json({
+                status: "success",
+                data: Object.assign({}, newProduct),
+                message: 'Product created Succesfully',
+            });
+        }
     }
     catch (error) {
         next(error);
@@ -34,24 +44,33 @@ const create = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
 exports.create = create;
 const createMerchant = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const newProduct = new product_model_1.default(req.body);
-        console.log(req.body);
-        console.log("Product");
-        console.log(newProduct);
-        if (req.body.typeProduct == "parapharmacy") {
-            const savedOrder = yield newProduct.save();
+        const filter = { id: req.body.id };
+        const product = yield product_model_1.default.findOne(filter).select("name").lean();
+        if (product) {
             res.json({
                 status: "success",
-                data: Object.assign({}, newProduct),
-                message: 'Product created Succesfully',
+                data: Object.assign({}, product),
+                message: 'Product already exist',
             });
         }
         else {
-            res.json({
-                status: "failed",
-                data: {},
-                message: 'You are not authorized to perform this action',
-            });
+            const newProduct = new product_model_1.default(req.body);
+            if (req.body.typeProduct == "parapharmacy") {
+                const savedOrder = yield newProduct.save();
+                console.log("new Product", newProduct.id);
+                res.json({
+                    status: "success",
+                    data: Object.assign({}, newProduct),
+                    message: 'Product created Succesfully',
+                });
+            }
+            else {
+                res.json({
+                    status: "failed",
+                    data: {},
+                    message: 'You are not authorized to perform this action',
+                });
+            }
         }
     }
     catch (error) {

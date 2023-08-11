@@ -3,17 +3,25 @@ import Product from "../models/product.model";
 
 export const create = async (req: Request, res: Response, next: NextFunction) =>{
     try{
-        const newProduct = new Product(req.body);
-        console.log(req.body);
-        console.log("Product");
-        console.log(newProduct);
+        const filter = {id: req.body.id};
+        const product = await Product.findOne(filter).select("name").lean()
+        if (product) {
+            res.json({
+                status: "success",
+                data: { ...product },
+                message: 'Product already exist',
+            });
+        } else {
+            const newProduct = new Product(req.body);
+            console.log("new Product", newProduct.id);
 
-        const savedOrder = await newProduct.save();
-        res.json({
-            status: "success",
-            data: { ...newProduct },
-            message: 'Product created Succesfully',
-        });
+            const savedOrder = await newProduct.save();
+            res.json({
+                status: "success",
+                data: { ...newProduct },
+                message: 'Product created Succesfully',
+            });
+        }
     } catch(error) {
         next(error);
     }
@@ -22,23 +30,31 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
 
 export const createMerchant = async (req: Request, res: Response, next: NextFunction) =>{
     try{
-        const newProduct = new Product(req.body);
-        console.log(req.body);
-        console.log("Product");
-        console.log(newProduct);
-        if (req.body.typeProduct == "parapharmacy") {
-            const savedOrder = await newProduct.save();
+        const filter = {id: req.body.id};
+        const product = await Product.findOne(filter).select("name").lean()
+        if (product) {
             res.json({
                 status: "success",
-                data: { ...newProduct },
-                message: 'Product created Succesfully',
+                data: { ...product },
+                message: 'Product already exist',
             });
         } else {
-            res.json({
-                status: "failed",
-                data: {},
-                message: 'You are not authorized to perform this action',
-            });
+            const newProduct = new Product(req.body);
+            if (req.body.typeProduct == "parapharmacy") {
+                const savedOrder = await newProduct.save();
+                console.log("new Product", newProduct.id);
+                res.json({
+                    status: "success",
+                    data: { ...newProduct },
+                    message: 'Product created Succesfully',
+                });
+            } else {
+                res.json({
+                    status: "failed",
+                    data: {},
+                    message: 'You are not authorized to perform this action',
+                });
+            }
         }
     } catch(error) {
         next(error);

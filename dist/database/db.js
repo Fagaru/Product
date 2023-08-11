@@ -4,9 +4,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
-const uri = "mongodb+srv://abdou:UeawXp23HKfOfZsp@cluster0.yy249vl.mongodb.net/";
+const config_1 = __importDefault(require("../config"));
+//const uri = "mongodb+srv://abdou:UeawXp23HKfOfZsp@cluster0.yy249vl.mongodb.net/"
+const uri = config_1.default.db_uri || "mongodb+srv://abdou:UeawXp23HKfOfZsp@cluster0.yy249vl.mongodb.net/";
 mongoose_1.default.connect(uri, {
-    dbName: 'CESIEATS'
+    // dbName: 'CESIEATS'
+    dbName: config_1.default.db_name
 })
     .then(() => console.log('Connexion à MongoDB  Product réussie !'))
     .catch(() => console.log('Connexion à MongoDB Product échouée !'));

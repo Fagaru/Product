@@ -8,7 +8,8 @@ const cors_1 = __importDefault(require("cors"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const routes_1 = __importDefault(require("./routes"));
 const db_1 = __importDefault(require("./database/db"));
-const PORT = 3001;
+const config_1 = __importDefault(require("./config"));
+const PORT = config_1.default.port || 3001;
 // const uri = "mongodb+srv://abdou:UeawXp23HKfOfZsp@cluster0.yy249vl.mongodb.net/"
 // const uri = "mongodb+srv://root:root@cluster0.ssyvssc.mongodb.net/?retryWrites=true&w=majority";
 // mongoose.connect(uri,

@@ -4,8 +4,9 @@ import mongoose from "mongoose";
 import bodyParser from 'body-parser'
 import routes from './routes';
 import db from './database/db';
+import config from './config';
 
-const PORT = 3001;
+const PORT = config.port || 3001;
 
 // const uri = "mongodb+srv://abdou:UeawXp23HKfOfZsp@cluster0.yy249vl.mongodb.net/"
 // const uri = "mongodb+srv://root:root@cluster0.ssyvssc.mongodb.net/?retryWrites=true&w=majority";
