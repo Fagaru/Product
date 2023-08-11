@@ -8,8 +8,8 @@ const { PORT } = process.env;
 const {
     NODE_ENV,
     CREATOR,
-    DB_URI,
-    DB_NAME,
+    uri,
+    dbName,
     BCRIPT_PASSWORD,
     SALT_ROUNDS,
     TOKEN_SECRET,
@@ -18,8 +18,8 @@ const {
 export default {
     port: PORT,
     creator: CREATOR,
-    db_name: DB_NAME,
-    db_uri: DB_URI,
+    dbName: dbName,
+    uri: uri,
     pepper: BCRIPT_PASSWORD,
     salt: SALT_ROUNDS,
     tokenSecret: TOKEN_SECRET,

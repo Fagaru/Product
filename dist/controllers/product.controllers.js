@@ -28,7 +28,6 @@ const create = (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
         else {
             const newProduct = new product_model_1.default(req.body);
             console.log("new Product", newProduct.id);
-            console.log(newProduct);
             const savedOrder = yield newProduct.save();
             res.json({
                 status: "success",

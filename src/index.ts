@@ -3,7 +3,7 @@ import cors from 'cors';
 import mongoose from "mongoose";
 import bodyParser from 'body-parser'
 import routes from './routes';
-import db from './database/db';
+import db from './database/db_test';
 import config from './config';
 
 const PORT = config.port || 3001;
