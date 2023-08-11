@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import Product from "../models/product.model";
+import { logger } from "../logging/logger"
 
 export const create = async (req: Request, res: Response, next: NextFunction) =>{
     try{
@@ -11,9 +12,9 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
                 data: { ...product },
                 message: 'Product already exist',
             });
+            logger.info("Created failed, Product already exist");
         } else {
             const newProduct = new Product(req.body);
-            console.log("new Product", newProduct.id);
 
             const savedOrder = await newProduct.save();
             res.json({
@@ -21,8 +22,10 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
                 data: { ...newProduct },
                 message: 'Product created Succesfully',
             });
+            logger.info("New product created", newProduct.id);
         }
     } catch(error) {
+        logger.error("Erreur ",error);
         next(error);
     }
 
@@ -38,25 +41,28 @@ export const createMerchant = async (req: Request, res: Response, next: NextFunc
                 data: { ...product },
                 message: 'Product already exist',
             });
+            logger.info("Created failed, Product already exist");
         } else {
             const newProduct = new Product(req.body);
             if (req.body.typeProduct == "parapharmacy") {
                 const savedOrder = await newProduct.save();
-                console.log("new Product", newProduct.id);
                 res.json({
                     status: "success",
                     data: { ...newProduct },
                     message: 'Product created Succesfully',
                 });
+                logger.info("New product created", newProduct.id);
             } else {
                 res.json({
                     status: "failed",
                     data: {},
                     message: 'You are not authorized to perform this action',
                 });
+                logger.warn("Action not authorized for this user");
             }
         }
     } catch(error) {
+        logger.error("Erreur ",error);
         next(error);
     }
 
@@ -71,7 +77,9 @@ export const findOne = async (req: Request, res: Response, next: NextFunction) =
             data: { ...product },
             message: 'Product found Succesfully',
         });
+        logger.info("Product found Succesfully");
     } catch(error) {
+        logger.error("Erreur ",error);
         next(error);
     }
 };
@@ -83,9 +91,11 @@ export const getTypeProduct = async (req: Request, res: Response, next: NextFunc
         res.json({
             status: "success",
             data: { ...product },
-            message: 'Product found Succesfully',
+            message: 'Products found Succesfully',
         });
+        logger.info("Products found Succesfully");
     } catch(error) {
+        logger.error("Erreur ",error);
         next(error);
     }
 };
@@ -97,13 +107,24 @@ export const updateOne = async (req: Request, res: Response, next: NextFunction)
         // const update = {updateAt: Date.now()}
         // const order = await Product.findOneAndUpdate(filter, req.body);
         // const orderU = await Product.findOneAndUpdate(filter, update);
-        const product = await Product.updateOne(filter, { ...req.body, _id: req.params.id, updateAt: Date.now()});
-        res.json({
-            status: "success",
-            data: { ...product },
-            message: 'Product updated Succesfully',
-        });
+        if (req.body.typeProduct == "parapharmacy") {
+            const product = await Product.updateOne(filter, { ...req.body, _id: req.params.id, updateAt: Date.now()});
+            res.json({
+                status: "success",
+                data: { ...product },
+                message: 'Product updated Succesfully',
+            });
+            logger.info("Product updated Succesfully");
+        } else {
+            res.json({
+                status: "failed",
+                data: {},
+                message: 'You are not authorized to perform this action',
+            });
+            logger.warn("Action not authorized for this user");
+        }
     } catch(error) {
+        logger.error("Erreur ",error);
         next(error);
     }   
 };
@@ -116,7 +137,9 @@ export const all = async (req: Request, res: Response, next: NextFunction) =>{
             data: { ...allProducts },
             message: 'Products found Succesfully',
         });
+        logger.info("Products found Succesfully");
     } catch(error) {
+        logger.error("Erreur ",error);
         next(error);
     }   
 };
@@ -132,14 +155,17 @@ export const deleteAsk = async (req: Request, res: Response, next: NextFunction)
                 data: { ...product },
                 message: 'Your request will be taken into account',
             });
+            logger.info("Ask to delete product ", req.params.id);
         } else {
             res.json({
                 status: "failed",
                 data: {...deletedProduct},
                 message: 'You are not authorized to perform this action',
             });
+            logger.warn("Action not authorized for this user");
         }
     } catch(error) {
+        logger.error("Erreur ",error);
         next(error);
     }   
 };
@@ -155,14 +181,17 @@ export const deleteOne = async (req: Request, res: Response, next: NextFunction)
                 data: { ...deleteProduct },
                 message: 'Product deleted Succesfully, you can no longer retrieve this data',
             });
+            logger.info("Product deleted succesfully");
         } else {
             res.json({
                 status: "success",
                 data: { ...deletedProduct },
                 message: 'Please request deletion before taking this action.',
             })
+            logger.warn("Action not authorized for this user, user tries to delete a product before applying");
         }
     } catch(error) {
+        logger.error("Erreur ",error);
         next(error);
     }   
 };
@@ -176,7 +205,9 @@ export const deleteOneSudo = async (req: Request, res: Response, next: NextFunct
             data: { ...deleteProduct },
             message: 'Product deleted Succesfully with sudo command, you can no longer retrieve this data',
         });
+        logger.warn("Product deleted succesfully by using sudoDelete");
     } catch(error) {
+        logger.error("Erreur ",error);
         next(error);
     }   
 };

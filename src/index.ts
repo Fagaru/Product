@@ -5,7 +5,7 @@ import bodyParser from 'body-parser'
 import routes from './routes';
 import db from './database/db_test';
 import config from './config';
-
+import {logger} from './logging/logger'
 const PORT = config.port || 3001;
 
 // const uri = "mongodb+srv://abdou:UeawXp23HKfOfZsp@cluster0.yy249vl.mongodb.net/"
@@ -25,10 +25,10 @@ const PORT = config.port || 3001;
 //   });
 
 db.on('connected', function() {
-       console.log("database is ready now with db");
+       logger.info("database is ready now with db");
    });
 db.on('disconnected', function() {
-   console.log("database is disconnected with db");
+   logger.error("database is disconnected with db");
    });
 
 // create instance server
@@ -71,7 +71,7 @@ app.use((req: Request, res: Response) => {
 
 // start express server
 app.listen(PORT, () => {
-   console.log(`Server is running at port:${PORT}`);
+   logger.info(`Server is running at port:${PORT}`);
 });  
 
 export default app;

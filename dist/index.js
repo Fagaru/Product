@@ -7,8 +7,9 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const routes_1 = __importDefault(require("./routes"));
-const db_1 = __importDefault(require("./database/db"));
+const db_test_1 = __importDefault(require("./database/db_test"));
 const config_1 = __importDefault(require("./config"));
+const logger_1 = require("./logging/logger");
 const PORT = config_1.default.port || 3001;
 // const uri = "mongodb+srv://abdou:UeawXp23HKfOfZsp@cluster0.yy249vl.mongodb.net/"
 // const uri = "mongodb+srv://root:root@cluster0.ssyvssc.mongodb.net/?retryWrites=true&w=majority";
@@ -24,11 +25,11 @@ const PORT = config_1.default.port || 3001;
 //   mongoose.connection.on('disconnected', function() {
 //   console.log("database is disconnected");
 //   });
-db_1.default.on('connected', function () {
-    console.log("database is ready now with db");
+db_test_1.default.on('connected', function () {
+    logger_1.logger.info("database is ready now with db");
 });
-db_1.default.on('disconnected', function () {
-    console.log("database is disconnected with db");
+db_test_1.default.on('disconnected', function () {
+    logger_1.logger.error("database is disconnected with db");
 });
 // create instance server
 const app = (0, express_1.default)();
@@ -61,6 +62,6 @@ app.use((req, res) => {
 });
 // start express server
 app.listen(PORT, () => {
-    console.log(`Server is running at port:${PORT}`);
+    logger_1.logger.info(`Server is running at port:${PORT}`);
 });
 exports.default = app;

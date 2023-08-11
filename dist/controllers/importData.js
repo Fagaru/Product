@@ -15,9 +15,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const CIS_CIP_bdpm_model_1 = __importDefault(require("../models/CIS_CIP_bdpm.model"));
 const db_1 = __importDefault(require("../database/db"));
 const fs_1 = __importDefault(require("fs"));
-const dataFilePath = '../data_gouv/file_txt/CIS_CIP_bdpm.txt'; // Adjust the path to your data file
+const logger_1 = require("../logging/logger");
+const dataFilePath = 'data_gouv/files/CIS_CIP_bdpm.txt'; // Adjust the path to your data file
 db_1.default.once('open', () => __awaiter(void 0, void 0, void 0, function* () {
-    console.log('Connected to MongoDB');
+    logger_1.logger.info('Connected to MongoDB');
     try {
         const data = yield fs_1.default.promises.readFile(dataFilePath, 'utf8');
         const lines = data.trim().split('\n');
@@ -25,12 +26,12 @@ db_1.default.once('open', () => __awaiter(void 0, void 0, void 0, function* () {
             const [codeCIS, codeCIP7, presentationLabel, administrativeStatusOfPresentation, marketingStatus, marketingDeclarationDate, codeCIP13, approvalForCommunities, reimbursementRate, priceInEuros, indicGivingEntitlementToRefund] = line.replace(/,[^\\t]*\\t/g, '\t').split('\t');
             const cis_cip_bdpm2 = new CIS_CIP_bdpm_model_1.default({ codeCIS, codeCIP7, presentationLabel, administrativeStatusOfPresentation, marketingStatus, marketingDeclarationDate, codeCIP13, approvalForCommunities, reimbursementRate, priceInEuros, indicGivingEntitlementToRefund });
             yield cis_cip_bdpm2.save();
-            console.log(`Inserted: ${codeCIS}, ${marketingDeclarationDate}`);
+            logger_1.logger.info(`Inserted: ${codeCIS}, ${marketingDeclarationDate}`);
         }
-        console.log('Data insertion complete');
+        logger_1.logger.info('Data insertion complete');
     }
     catch (error) {
-        console.error('Error:', error);
+        logger_1.logger.error('Error:', error);
     }
     finally {
         db_1.default.close();

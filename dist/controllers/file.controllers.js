@@ -18,10 +18,11 @@ const axios_1 = __importDefault(require("axios"));
 const path_1 = __importDefault(require("path"));
 const db_1 = __importDefault(require("../database/db"));
 const CIS_CIP_bdpm_model_1 = __importDefault(require("../models/CIS_CIP_bdpm.model"));
+const logger_1 = require("../logging/logger");
 const downloadFiles = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     const fileUrl = 'https://base-donnees-publique.medicaments.gouv.fr/telechargement.php?fichier=CIS_bdpm.txt';
     const destinationFilePath = '../data_gouv/file_txt';
-    const directoryPath = '../data_gouv/file_txt/'; // Replace this with the path to your desired directory
+    const directoryPath = 'data_gouv/files/'; // Replace this with the path to your desired directory
     // const fileName = 'CIS_bdpm.txt';
     const fileContent = '';
     const myDictionary = {
@@ -44,27 +45,26 @@ const downloadFiles = (req, res, next) => __awaiter(void 0, void 0, void 0, func
             console.log(value);
             let match = value.split('=');
             const fileName = match[1];
-            console.log(fileName);
             const filePath = path_1.default.join(directoryPath, fileName);
             fs_1.default.writeFile(filePath, fileContent, (err) => {
                 if (err) {
-                    console.error('Error creating the file:', err);
+                    logger_1.logger.error('Error creating the file:', err);
                 }
                 else {
-                    console.log('File created successfully!');
+                    //logger.info('File created successfully!');
                 }
             });
             downloadFile(fileUrl, filePath);
-            console.log('File downloaded successfully.');
         });
         res.json({
             status: "success",
             data: {},
             message: 'File downloaded successfully.',
         });
+        logger_1.logger.info('File downloaded successfully.');
     }
     catch (error) {
-        console.error('Error downloading file:', error);
+        logger_1.logger.error('Error downloading file:', error);
         next(error);
     }
 });
@@ -73,7 +73,7 @@ exports.downloadFiles = downloadFiles;
 const dataFilePath = '../data_gouv/file_txt/CIS_CIP_bdpm.txt'; // Adjust the path to your data file
 const importData = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     db_1.default.once('open', () => __awaiter(void 0, void 0, void 0, function* () {
-        console.log('Connected to MongoDB');
+        logger_1.logger.info('Connected to MongoDB to import data from the web');
         try {
             const data = yield fs_1.default.promises.readFile(dataFilePath, 'utf8');
             const lines = data.trim().split('\n');
@@ -83,18 +83,19 @@ const importData = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
                 yield cis_cip_bdpm.save();
                 console.log(`Inserted: ${codeCIS}, ${marketingDeclarationDate}`);
             }
-            console.log('Data insertion complete');
             res.json({
                 status: "success",
                 data: {},
-                message: 'File downloaded successfully.',
+                message: 'Files downloaded successfully.',
             });
+            logger_1.logger.info('Data insertion complete');
         }
         catch (error) {
-            console.error('Error:', error);
+            logger_1.logger.error('Error:', error);
             next(error);
         }
         finally {
+            logger_1.logger.warn("Connection to database closed");
             db_1.default.close();
         }
     }));

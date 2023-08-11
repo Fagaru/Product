@@ -4,12 +4,13 @@ import axios from "axios";
 import path from "path";
 import db from "../database/db";
 import CIS_CIP_bdpm from "../models/CIS_CIP_bdpm.model";
+import { logger } from "../logging/logger";
 
 export const downloadFiles = async (req: Request, res: Response, next: NextFunction) => {
     const fileUrl = 'https://base-donnees-publique.medicaments.gouv.fr/telechargement.php?fichier=CIS_bdpm.txt';
     const destinationFilePath = '../data_gouv/file_txt';
 
-    const directoryPath = '../data_gouv/file_txt/'; // Replace this with the path to your desired directory
+    const directoryPath = 'data_gouv/files/'; // Replace this with the path to your desired directory
     // const fileName = 'CIS_bdpm.txt';
     const fileContent = '';
     const myDictionary = {
@@ -33,28 +34,28 @@ export const downloadFiles = async (req: Request, res: Response, next: NextFunct
             console.log(value);
             let match = value.split('=');
             const fileName = match[1];
-            console.log(fileName);
 
             const filePath = path.join(directoryPath, fileName);
 
             fs.writeFile(filePath, fileContent, (err) => {
                 if (err) {
-                    console.error('Error creating the file:', err);
+                    logger.error('Error creating the file:', err);
                 } else {
-                    console.log('File created successfully!');
+                    //logger.info('File created successfully!');
                 }
             });
             
             downloadFile(fileUrl, filePath)
-            console.log('File downloaded successfully.');
+            
         });
         res.json({
             status: "success",
             data: { },
             message: 'File downloaded successfully.',
         })
+        logger.info('File downloaded successfully.');
     } catch(error) {
-        console.error('Error downloading file:', error);
+        logger.error('Error downloading file:', error);
         next(error);
     }
 };
@@ -66,7 +67,7 @@ const dataFilePath = '../data_gouv/file_txt/CIS_CIP_bdpm.txt'; // Adjust the pat
 
 export const importData = async (req: Request, res: Response, next: NextFunction) =>{
   db.once('open', async () => {
-    console.log('Connected to MongoDB');
+    logger.info('Connected to MongoDB to import data from the web');
 
     try {
       const data = await fs.promises.readFile(dataFilePath, 'utf8');
@@ -79,25 +80,21 @@ export const importData = async (req: Request, res: Response, next: NextFunction
         console.log(`Inserted: ${codeCIS}, ${marketingDeclarationDate}`);
       }
 
-      console.log('Data insertion complete');
       res.json({
         status: "success",
         data: { },
-        message: 'File downloaded successfully.',
+        message: 'Files downloaded successfully.',
       })
+      logger.info('Data insertion complete');
     } catch (error) {
-      console.error('Error:', error);
+      logger.error('Error:', error);
       next(error);
     } finally {
+      logger.warn("Connection to database closed")
       db.close();
     }
   });
 }
-
-
-
-
-
 
 
 const downloadFile = async (url: string, destinationPath: fs.PathLike) => {
