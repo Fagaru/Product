@@ -11,20 +11,6 @@ const db_test_1 = __importDefault(require("./database/db_test"));
 const config_1 = __importDefault(require("./config"));
 const logger_1 = require("./logging/logger");
 const PORT = config_1.default.port || 3001;
-// const uri = "mongodb+srv://abdou:UeawXp23HKfOfZsp@cluster0.yy249vl.mongodb.net/"
-// const uri = "mongodb+srv://root:root@cluster0.ssyvssc.mongodb.net/?retryWrites=true&w=majority";
-// mongoose.connect(uri,
-//     { 
-//     dbName: 'CESIEATS'
-//     })
-//   .then(() => console.log('Connexion à MongoDB  Product réussie !'))
-//   .catch(() => console.log('Connexion à MongoDB Product échouée !'));
-//   mongoose.connection.on('connected', function() {
-//     console.log("database is ready now");
-//   });
-//   mongoose.connection.on('disconnected', function() {
-//   console.log("database is disconnected");
-//   });
 db_test_1.default.on('connected', function () {
     logger_1.logger.info("database is ready now with db");
 });

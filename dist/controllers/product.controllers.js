@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteOneSudo = exports.deleteOne = exports.deleteAsk = exports.all = exports.updateOne = exports.getTypeProduct = exports.findOne = exports.createMerchant = exports.create = void 0;
+exports.deleteOneSudo = exports.deleteOne = exports.deleteAsk = exports.all = exports.updateOne = exports.getByTypeProduct = exports.getById = exports.createMerchant = exports.create = void 0;
 const product_model_1 = __importDefault(require("../models/product.model"));
 const logger_1 = require("../logging/logger");
 const create = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -83,7 +83,7 @@ const createMerchant = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
     }
 });
 exports.createMerchant = createMerchant;
-const findOne = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+const getById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const filter = { _id: req.params.id };
         const product = yield product_model_1.default.findOne(filter);
@@ -99,8 +99,8 @@ const findOne = (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
         next(error);
     }
 });
-exports.findOne = findOne;
-const getTypeProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+exports.getById = getById;
+const getByTypeProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const filter = { typeProduct: req.params.typeProduct };
         const product = yield product_model_1.default.find(filter);
@@ -116,7 +116,7 @@ const getTypeProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, fun
         next(error);
     }
 });
-exports.getTypeProduct = getTypeProduct;
+exports.getByTypeProduct = getByTypeProduct;
 const updateOne = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const filter = { _id: req.params.id };
