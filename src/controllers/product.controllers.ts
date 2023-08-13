@@ -68,7 +68,7 @@ export const createMerchant = async (req: Request, res: Response, next: NextFunc
 
 };
 
-export const findOne = async (req: Request, res: Response, next: NextFunction) =>{
+export const getById = async (req: Request, res: Response, next: NextFunction) =>{
     try{
         const filter = {_id: req.params.id};
         const product = await Product.findOne(filter);
@@ -84,7 +84,7 @@ export const findOne = async (req: Request, res: Response, next: NextFunction) =
     }
 };
 
-export const getTypeProduct = async (req: Request, res: Response, next: NextFunction) =>{
+export const getByTypeProduct = async (req: Request, res: Response, next: NextFunction) =>{
     try{
         const filter = {typeProduct: req.params.typeProduct};
         const product = await Product.find(filter);

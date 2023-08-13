@@ -8,21 +8,6 @@ import config from './config';
 import {logger} from './logging/logger'
 const PORT = config.port || 3001;
 
-// const uri = "mongodb+srv://abdou:UeawXp23HKfOfZsp@cluster0.yy249vl.mongodb.net/"
-// const uri = "mongodb+srv://root:root@cluster0.ssyvssc.mongodb.net/?retryWrites=true&w=majority";
-// mongoose.connect(uri,
-//     { 
-//     dbName: 'CESIEATS'
-//     })
-//   .then(() => console.log('Connexion à MongoDB  Product réussie !'))
-//   .catch(() => console.log('Connexion à MongoDB Product échouée !'));
-  
-//   mongoose.connection.on('connected', function() {
-//     console.log("database is ready now");
-//   });
-//   mongoose.connection.on('disconnected', function() {
-//   console.log("database is disconnected");
-//   });
 
 db.on('connected', function() {
        logger.info("database is ready now with db");
